@@ -9,9 +9,9 @@
 
 :log info "FQDN is $fqdn";
 if ($leaseBound = 1) do={
-  :log info "About to add DNS records for $fqdn ($leaseActIP)";
+	:log info "About to add DNS records for $fqdn ($leaseActIP)";
 	/ip dns static add comment="Added by $leaseServerName lease-script" ttl=[ /ip dhcp-server get dhcp172 lease-time ] address=$leaseActIP name=$fqdn;
 } else {
-  :log info "About to remove DNS records for $fqdn ($leaseActIP)";
+	:log info "About to remove DNS records for $fqdn ($leaseActIP)";
 	/ip dns static remove [ find address=$leaseActIP name=$fqdn ];
 }
