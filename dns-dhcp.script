@@ -1,0 +1,17 @@
+# Adds a static DNS record for each lease assigned by DHCP server.
+# Those records are combined with client-supplied host-name and domain, assigned
+# to DHCP server network containing the IP address leased to the client. DNS RR
+# TTL is set to DHCP server lease time
+#
+# To be used as lease-script value of some /ip dhcp-server address-pool
+
+:local fqdn ([ /ip dhcp-server lease get [ find address=$leaseActIP ] host-name ] . "." . [ /ip dhcp-server network get [ find $leaseActIP in $address ] domain ]);
+
+:log info "FQDN is $fqdn";
+if ($leaseBound = 1) do={
+  :log info "About to add DNS records for $fqdn ($leaseActIP)";
+	/ip dns static add comment="Added by $leaseServerName lease-script" ttl=[ /ip dhcp-server get dhcp172 lease-time ] address=$leaseActIP name=$fqdn;
+} else {
+  :log info "About to remove DNS records for $fqdn ($leaseActIP)";
+	/ip dns static remove [ find address=$leaseActIP name=$fqdn ];
+}
