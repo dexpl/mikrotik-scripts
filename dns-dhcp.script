@@ -1,3 +1,5 @@
+# vim:tw=80
+#
 # Adds a static DNS record for each lease assigned by DHCP server.
 # Those records are combined with client-supplied host-name and domain, assigned
 # to DHCP server network containing the IP address leased to the client. DNS RR
