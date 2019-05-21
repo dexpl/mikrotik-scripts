@@ -1,0 +1,53 @@
+# vim: tw=80 ts=2 sw=2 et
+#
+# Fixes an eoip tunned between two Mikrotiks with a static IP address on one
+# side and a dynamic one on another when the latter changes.
+#
+# Consider the following setup: one router has a public static IP, another
+# router has a public dynamic IP, a static DNS name and "ip cloud ddns-enabled";
+# you set up an eoip tunnel between them with IPSec secret. When the IP on
+# second router changes, you tunnel breaks until you change the IP to the new
+# one on both sides. This script automates that change.
+#
+# Save this script on both routers into repository under, say, fix-eoip-tunnel
+# name; set you tunnel name to "intersite" or change the appropriate line in the
+# script; schedule it to run, say, each second with the following command:
+# system scheduler add name=fix-intersite-tunnel interval=1s on-event=fix-eoip-tunnel
+#
+# For this to work, eoip tunnel comment on router1 must be equal to router2 DDNS
+# name.
+
+# EoIP interface name to work on
+:local eoipTunnel "intersite"
+
+# Proceed only if there's such eoip interface
+if ([ /interface eoip find name=$eoipTunnel ] != "") do={
+  :global fixLocal do={
+    :local localIP [ /interface eoip get $ifName local-address ]
+    :local publicIP [ /ip cloud get public-address ]
+
+    :if ($localIP != $publicIP) do={
+      :log info "About to set local-address for $ifName to $publicIP"
+      /interface eoip set $ifName local-address=$publicIP
+    }
+  }
+
+  :global fixRemote do={
+# Interface's comment is expected to contain remote host name
+    :local remoteName [ /interface get $ifName comment ]
+    :local remoteIP [ :resolve $remoteName ]
+
+    :if ($remoteIP != [ /interface eoip get $ifName remote-address ]) do={
+      :log info "About to set remote-address for $ifName to $remoteIP"
+      /interface eoip set $ifName remote-address=$remoteIP
+    }
+  }
+
+# If DDNS is not enabled then our public IP must be static, hence we need to fix
+# the tunnel remote address. Otherwise we need to fix the local one.
+  if ([ /ip cloud get ddns-enabled ]) do={
+    $fixLocal ifName=$eoipTunnel
+  } else={
+    $fixRemote ifName=$eoipTunnel
+  }
+} else={ :log info "$eoipTunnel: no such EoIP interface" }
