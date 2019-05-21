@@ -1,1 +1,6 @@
 Various scripts for Mikrotik RouterOS (see internal descriptions to find out more)
+
+To install a script named foobar from a file named foobar.script execute
+system script add name=foobar source=[ /file get [find name=foobar.script] contents ]
+on your Mikrotik device. To modify an existing script named foobar do
+system script set [find name=foobar] source=[ /file get [find name=foobar.script] contents ]
