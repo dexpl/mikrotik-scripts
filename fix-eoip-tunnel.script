@@ -9,13 +9,14 @@
 # second router changes, you tunnel breaks until you change the IP to the new
 # one on both sides. This script automates that change.
 #
-# Save this script on both routers into repository under, say, fix-eoip-tunnel
+# Save this script on both routers into repository under, say, "fix-eoip-tunnel"
 # name; set you tunnel name to "intersite" or change the appropriate line in the
-# script; schedule it to run, say, each second with the following command:
+# script; schedule the script to run, say, each second with the following
+# command:
 # system scheduler add name=fix-intersite-tunnel interval=1s on-event=fix-eoip-tunnel
 #
-# For this to work, eoip tunnel comment on router1 must be equal to router2 DDNS
-# name.
+# For this to work, eoip tunnel comment on the first router must be equal to
+# DDNS name of the second one.
 
 # EoIP interface name to work on
 :local eoipTunnel "intersite"
