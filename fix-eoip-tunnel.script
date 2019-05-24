@@ -23,7 +23,7 @@
 
 # Proceed only if there's such eoip interface
 if ([ /interface eoip find name=$eoipTunnel ] != "") do={
-  :global fixLocal do={
+  :local fixLocal do={
     :local localIP [ /interface eoip get $ifName local-address ]
     :local publicIP [ /ip cloud get public-address ]
 
@@ -33,7 +33,7 @@ if ([ /interface eoip find name=$eoipTunnel ] != "") do={
     }
   }
 
-  :global fixRemote do={
+  :local fixRemote do={
 # Interface's comment is expected to contain remote host name
     :local remoteName [ /interface get $ifName comment ]
     :local remoteIP [ :resolve $remoteName ]
