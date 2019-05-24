@@ -1,4 +1,4 @@
-# vim: tw=80 ts=2 sw=2 et
+# vim: ft=rsc tw=80 ts=2 sw=2 et
 #
 # Adds a static DNS record for each lease assigned by DHCP server.
 # Those records are combined with client-supplied host-name and domain, assigned

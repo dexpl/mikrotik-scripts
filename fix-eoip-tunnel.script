@@ -1,4 +1,4 @@
-# vim: tw=80 ts=2 sw=2 et
+# vim: ft=rsc tw=80 ts=2 sw=2 et
 #
 # Fixes an eoip tunned between two Mikrotiks with a static IP address on one
 # side and a dynamic one on another when the latter changes.
