@@ -44,8 +44,8 @@ if ([ /interface eoip find name=$eoipTunnel ] != "") do={
     }
   }
 
-# If DDNS is not enabled then our public IP must be static, hence we need to fix
-# the tunnel remote address. Otherwise we need to fix the local one.
+# If DDNS is enabled then we need to fix the tunnel remote address. Otherwise
+# our public IP must be static, we need to fix the local one.
   if ([ /ip cloud get ddns-enabled ]) do={
     $fixLocal ifName=$eoipTunnel
   } else={
