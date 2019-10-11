@@ -1,0 +1,27 @@
+# vim: ft=rsc tw=80 ts=2 sw=2 et
+#
+# Fixes eoip tunnels between two Mikrotiks with a static IP address on one
+# side and a dynamic one on another if the latter changes.
+#
+# TODO: document it properly.
+#
+# Save this script on both routers into repository under, say, "fix-eoip-tunnel"
+# name; set you tunnel name to "intersite" or change the appropriate line in the
+# script; schedule the script to run, say, each second with the following
+# command:
+# system scheduler add name=fix-intersite-tunnel interval=1s on-event=fix-eoip-tunnel
+#
+# For this to work, eoip tunnel comment on the first router must be equal to
+# DDNS name of the second one.
+
+:foreach eoip in=[ /interface eoip find ] do={
+  :local ifName [ /interface eoip get $eoip name ]
+  :local remoteName [ /interface eoip get $eoip comment ]
+  if ($remoteName ~ ".sn.mynetname.net") do={
+    :local remoteIP [ :resolve $remoteName ]
+    if ($remoteIP != [ /interface eoip get $eoip remote-address ]) do={
+      :log info message="About to set remote-address for $ifName to $remoteIP"
+      /interface eoip set $ifName remote-address=$remoteIP
+    }
+  }
+}
