@@ -9,13 +9,20 @@
 # name; set you tunnel name to "intersite" or change the appropriate line in the
 # script; schedule the script to run, say, each second with the following
 # command:
-# system scheduler add name=fix-intersite-tunnel interval=1s on-event=fix-eoip-tunnel
+# system scheduler add name=fix-eoip-tunnels interval=1s on-event=fix-eoip-tunnels
 #
 # For this to work, eoip tunnel comment on the first router must be equal to
 # DDNS name of the second one.
 
 :foreach eoip in=[ /interface eoip find ] do={
   :local ifName [ /interface eoip get $eoip name ]
+  if ([ /ip cloud get ddns-enabled ]) do={
+    :local localIP [ /ip cloud get public-address ]
+    if ($localIP != [ /interface eoip get $eoip local-address ]) do={
+      :log info message="About to set local-address for $ifName to $localIP"
+      /interface eoip set $ifName local-address=$localIP
+    }
+  }
   :local remoteName [ /interface eoip get $eoip comment ]
   if ($remoteName ~ ".sn.mynetname.net") do={
     :local remoteIP [ :resolve $remoteName ]
