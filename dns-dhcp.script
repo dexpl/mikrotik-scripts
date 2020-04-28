@@ -1,4 +1,4 @@
-# vim: ft=rsc tw=80 ts=2 sw=2 et
+# vim: ft=rsc ts=2 sw=2 et
 #
 # Adds a static DNS record for each lease assigned by DHCP server.
 # Those records are combined with client-supplied host-name and domain, assigned
@@ -12,7 +12,7 @@
 :log info "FQDN is $fqdn";
 if ($leaseBound = 1) do={
   :log info "About to add DNS records for $fqdn ($leaseActIP)";
-  /ip dns static add comment="Added by $leaseServerName lease-script" ttl=[ /ip dhcp-server get dhcp172 lease-time ] address=$leaseActIP name=$fqdn;
+  /ip dns static add comment="Added by $leaseServerName lease-script" ttl=[ /ip dhcp-server get $leaseServerName lease-time ] address=$leaseActIP name=$fqdn;
 } else {
   :log info "About to remove DNS records for $fqdn ($leaseActIP)";
   /ip dns static remove [ find address=$leaseActIP name=$fqdn ];
