@@ -9,11 +9,10 @@
 
 :local fqdn ([ /ip dhcp-server lease get [ find address=$leaseActIP ] host-name ] . "." . [ /ip dhcp-server network get [ find $leaseActIP in $address ] domain ]);
 
-:log info "FQDN is $fqdn";
 if ($leaseBound = 1) do={
-  :log info "About to add DNS records for $fqdn ($leaseActIP)";
+  :log debug "About to add DNS records for $fqdn ($leaseActIP)";
   /ip dns static add comment="Added by $leaseServerName lease-script" ttl=[ /ip dhcp-server get $leaseServerName lease-time ] address=$leaseActIP name=$fqdn;
 } else {
-  :log info "About to remove DNS records for $fqdn ($leaseActIP)";
+  :log debug "About to remove DNS records for $fqdn ($leaseActIP)";
   /ip dns static remove [ find address=$leaseActIP name=$fqdn ];
 }
