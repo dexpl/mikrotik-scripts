@@ -5,7 +5,7 @@
 # to DHCP server network containing the IP address leased to the client. DNS RR
 # TTL is set to DHCP server lease time
 #
-# To be used as lease-script value of some /ip dhcp-server address-pool
+# To be used as lease-script value of some /ip dhcp-server
 
 :local fqdn ([ /ip dhcp-server lease get [ find address=$leaseActIP ] host-name ] . "." . [ /ip dhcp-server network get [ find $leaseActIP in $address ] domain ]);
 
